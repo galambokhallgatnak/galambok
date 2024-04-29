@@ -48,10 +48,13 @@
         Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia vizsgájának A galambok hallgatnak című utcaszínházi projektje. A szokták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.
     </div>
 
-    <div id="noQuestion" class="hidden">
-        <p>Megér egy kattintást a boldog élet?</p>
-        <button onclick="secondYes(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Igen_Second'});">Igen</button>
-        <button onclick="secondNo(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Nem_Second'});">Nem</button>
+    <div id="multipleYes" class="hidden">
+        <!-- Itt generáljuk le a 15 "Igen" gombot -->
+        <script>
+            for (let i = 0; i < 15; i++) {
+                document.write('<button onclick="firstYes(); gtag(\'event\', \'click\', {\'event_category\': \'button\', \'event_label\': \'Igen_Multiple\' + (i+1)});">Igen</button>');
+            }
+        </script>
     </div>
 
     <div id="noMessage" class="hidden">
@@ -62,22 +65,12 @@
         function firstYes() {
             document.getElementById('yesMessage').style.display = 'block';
             document.getElementById('firstQuestion').style.display = 'none';
+            document.getElementById('multipleYes').style.display = 'none';
         }
 
         function firstNo() {
-            document.getElementById('noQuestion').style.display = 'block';
+            document.getElementById('multipleYes').style.display = 'block';
             document.getElementById('firstQuestion').style.display = 'none';
-        }
-
-        function secondYes() {
-            document.getElementById('yesMessage').style.display = 'block';
-            document.getElementById('noQuestion').style.display = 'none';
-            document.getElementById('noMessage').style.display = 'none';
-        }
-
-        function secondNo() {
-            document.getElementById('noMessage').style.display = 'block';
-            document.getElementById('noQuestion').style.display = 'none';
         }
     </script>
 </body>
