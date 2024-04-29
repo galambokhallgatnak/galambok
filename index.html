@@ -54,9 +54,8 @@
     </div>
 
     <div id="yesContainer" class="hidden">
-        <h1>Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?</h1>
         <div id="buttonsContainer"></div>
-        <button id="randomNoButton" onclick="randomizeNoButton();">Nem</button>
+        <button id="randomNoButton" onclick="randomizeNoButton(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Nem_Random'});">Nem</button>
     </div>
 
     <script>
