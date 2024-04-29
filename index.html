@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galambok</title>
+    <title>Community Project</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -12,11 +12,8 @@
             text-align: center;
             padding-top: 50px;
         }
-        .hidden {
-            display: none;
-        }
         button {
-            margin: 5px;
+            margin: 10px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #555;
@@ -28,63 +25,75 @@
         button:hover {
             background-color: #777;
         }
-        #yesContainer {
+        #yesContainer, #noContainer {
+            display: none;
+        }
+        #yesContainer div, #noContainer div {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
         }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-988PF3GF3R"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-988PF3GF3R');
-    </script>
 </head>
 <body>
-    <div id="firstQuestion">
-        <h1>Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?</h1>
-        <button onclick="firstYes(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Igen_First'});">Igen</button>
-        <button onclick="firstNo(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Nem_First'});">Nem</button>
+    <div id="languageSelector">
+        <button onclick="setLanguage('HU')">HU</button>
+        <button onclick="setLanguage('RO')">RO</button>
     </div>
-
-    <div id="yesMessage" class="hidden">
-        Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia vizsgájának A galambok hallgatnak című utcaszínházi projektje. A szokták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.
+    <div id="question">
+        <h1></h1>
+        <button onclick="yesClicked()">Igen</button>
+        <button onclick="noClicked()">Nem</button>
     </div>
-
-    <div id="yesContainer" class="hidden">
-        <div id="buttonsContainer"></div>
-        <button id="randomNoButton" onclick="randomizeNoButton(); gtag('event', 'click', {'event_category': 'button', 'event_label': 'Nem_Random'});">Nem</button>
+    <div id="yesContainer">
+        <p></p>
     </div>
-
+    <div id="noContainer">
+        <div></div>
+        <button onclick="randomNoButton()">Nem</button>
+    </div>
+    
     <script>
-        function firstYes() {
-            document.getElementById('yesMessage').style.display = 'block';
-            document.getElementById('firstQuestion').style.display = 'none';
-            document.getElementById('yesContainer').style.display = 'none';
+        function setLanguage(lang) {
+            const questionTextHU = "Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?";
+            const questionTextRO = "Ești gata să găsești adevărata fericire în comunitatea noastră?";
+            const yesTextHU = "Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia osztályának A galambok hallgatnak című utcaszínházi projektje. A szekták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.";
+            const yesTextRO = "Acesta este proiectul de teatru stradal al clasei de teatrologie anul III de la Universitatea de Arte din Târgu Mureș, numit Tăcerea porumbeilor. Sectele atrag oamenii cu astfel de propoziții. Aceste propoziții au fost scrise de ChatGPT.";
+            
+            document.getElementById('languageSelector').style.display = 'none';
+            document.getElementById('question').style.display = 'block';
+            
+            if (lang === 'HU') {
+                document.querySelector('#question h1').textContent = questionTextHU;
+                document.querySelector('#yesContainer p').textContent = yesTextHU;
+            } else {
+                document.querySelector('#question h1').textContent = questionTextRO;
+                document.querySelector('#yesContainer p').textContent = yesTextRO;
+            }
         }
 
-        function firstNo() {
-            const container = document.getElementById('buttonsContainer');
+        function yesClicked() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('yesContainer').style.display = 'block';
+        }
+
+        function noClicked() {
+            document.getElementById('question').style.display = 'none';
+            const container = document.getElementById('noContainer').children[0];
             container.innerHTML = ''; // Clear previous buttons
             for (let i = 0; i < 50; i++) {
                 const button = document.createElement('button');
                 button.textContent = 'Igen';
-                button.onclick = function() {
-                    firstYes();
-                    gtag('event', 'click', {'event_category': 'button', 'event_label': 'Igen_Multiple_' + (i + 1)});
-                };
+                button.onclick = yesClicked;
                 container.appendChild(button);
             }
-            document.getElementById('yesContainer').style.display = 'flex';
-            randomizeNoButton();
-            document.getElementById('firstQuestion').style.display = 'none';
+            document.getElementById('noContainer').style.display = 'block';
+            randomNoButton();
         }
 
-        function randomizeNoButton() {
-            const container = document.getElementById('buttonsContainer');
-            const noButton = document.getElementById('randomNoButton');
+        function randomNoButton() {
+            const container = document.getElementById('noContainer').children[0];
+            const noButton = document.getElementById('noContainer').children[1];
             noButton.remove(); // Remove the button to place it again
             const position = Math.floor(Math.random() * (container.children.length + 1)); // Random position
             container.insertBefore(noButton, container.children[position]);
