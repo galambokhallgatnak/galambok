@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galambok</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div id="firstQuestion">
+        <h1>Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?</h1>
+        <button onclick="firstYes()">Igen</button>
+        <button onclick="firstNo()">Nem</button>
+    </div>
+
+    <div id="yesMessage" class="hidden">
+        Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia vizsgájának A galambok hallgatnak című utcaszínházi projektje. A szokták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.
+    </div>
+
+    <div id="noQuestion" class="hidden">
+        <p>Megér egy kattintást a boldog élet?</p>
+        <button onclick="secondYes()">Igen</button>
+        <button onclick="secondNo()">Nem</button>
+    </div>
+
+    <div id="noMessage" class="hidden">
+        Bármikor meggondolhatod magad!
+    </div>
+
+    <script>
+        function firstYes() {
+            document.getElementById('yesMessage').style.display = 'block';
+            document.getElementById('firstQuestion').style.display = 'none';
+        }
+
+        function firstNo() {
+            document.getElementById('noQuestion').style.display = 'block';
+            document.getElementById('firstQuestion').style.display = 'none';
+        }
+
+        function secondYes() {
+            document.getElementById('yesMessage').style.display = 'block';
+            document.getElementById('noQuestion').style.display = 'none';
+            document.getElementById('noMessage').style.display = 'none';
+        }
+
+        function secondNo() {
+            document.getElementById('noMessage').style.display = 'block';
+            document.getElementById('noQuestion').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
