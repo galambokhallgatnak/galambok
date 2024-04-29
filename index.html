@@ -16,7 +16,7 @@
             display: none;
         }
         button {
-            margin: 20px;
+            margin: 5px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #555;
@@ -27,6 +27,11 @@
         }
         button:hover {
             background-color: #777;
+        }
+        #yesContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-988PF3GF3R"></script>
@@ -48,29 +53,41 @@
         Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia vizsgájának A galambok hallgatnak című utcaszínházi projektje. A szokták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.
     </div>
 
-    <div id="multipleYes" class="hidden">
-        <!-- Itt generáljuk le a 15 "Igen" gombot -->
-        <script>
-            for (let i = 0; i < 15; i++) {
-                document.write('<button onclick="firstYes(); gtag(\'event\', \'click\', {\'event_category\': \'button\', \'event_label\': \'Igen_Multiple\' + (i+1)});">Igen</button>');
-            }
-        </script>
-    </div>
-
-    <div id="noMessage" class="hidden">
-        Bármikor meggondolhatod magad!
+    <div id="yesContainer" class="hidden">
+        <div id="buttonsContainer"></div>
+        <button id="randomNoButton" onclick="randomizeNoButton();">Nem</button>
     </div>
 
     <script>
         function firstYes() {
             document.getElementById('yesMessage').style.display = 'block';
             document.getElementById('firstQuestion').style.display = 'none';
-            document.getElementById('multipleYes').style.display = 'none';
+            document.getElementById('yesContainer').style.display = 'none';
         }
 
         function firstNo() {
-            document.getElementById('multipleYes').style.display = 'block';
+            const container = document.getElementById('buttonsContainer');
+            container.innerHTML = ''; // Clear previous buttons
+            for (let i = 0; i < 50; i++) {
+                const button = document.createElement('button');
+                button.textContent = 'Igen';
+                button.onclick = function() {
+                    firstYes();
+                    gtag('event', 'click', {'event_category': 'button', 'event_label': 'Igen_Multiple_' + (i + 1)});
+                };
+                container.appendChild(button);
+            }
+            document.getElementById('yesContainer').style.display = 'flex';
+            randomizeNoButton();
             document.getElementById('firstQuestion').style.display = 'none';
+        }
+
+        function randomizeNoButton() {
+            const container = document.getElementById('buttonsContainer');
+            const noButton = document.getElementById('randomNoButton');
+            noButton.remove(); // Remove the button to place it again
+            const position = Math.floor(Math.random() * (container.children.length + 1)); // Random position
+            container.insertBefore(noButton, container.children[position]);
         }
     </script>
 </body>
