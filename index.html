@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -42,17 +42,21 @@
     </div>
     <div id="mainContainer" class="hidden">
         <h1 id="mainQuestion"></h1>
-        <button onclick="yesClicked()">Igen</button>
-        <button onclick="noClicked()">Nem</button>
+        <button id="yesButton" onclick="yesClicked()"></button>
+        <button id="noButton" onclick="noClicked()"></button>
     </div>
     <div id="dynamicContainer" class="hidden">
         <p id="dynamicText"></p>
-        <button id="nextButton" onclick="nextStage()">Tovább</button>
+        <button id="nextButton" onclick="nextStage()"></button>
     </div>
 
     <script>
         const textHU = {
             question: "Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?",
+            yes: "Igen",
+            no: "Nem",
+            next: "Tovább",
+            join: "Csatlakozom",
             yesResponses: [
                 "Változtasd meg az életed minőségét!",
                 "Törd meg a magány láncát!",
@@ -62,6 +66,10 @@
         };
         const textRO = {
             question: "Ești gata să găsești fericirea adevărată în comunitatea noastră?",
+            yes: "Da",
+            no: "Nu",
+            next: "Continuă",
+            join: "Alătură-te",
             yesResponses: [
                 "Schimbă calitatea vieții tale!",
                 "Rupe lanțurile singurătății!",
@@ -77,58 +85,55 @@
             document.getElementById('languageSelector').style.display = 'none';
             document.getElementById('mainContainer').style.display = 'block';
             document.getElementById('mainQuestion').textContent = currentLang.question;
-            document.getElementById('nextButton').textContent = lang === 'HU' ? 'Tovább' : 'Continuă';
+            document.getElementById('yesButton').textContent = currentLang.yes;
+            document.getElementById('noButton').textContent = currentLang.no;
+            document.getElementById('nextButton').textContent = currentLang.next;
         }
 
         function yesClicked() {
             document.getElementById('mainContainer').style.display = 'none';
             document.getElementById('dynamicContainer').style.display = 'block';
+            currentIndex = 0;
             nextStage();
         }
 
         function noClicked() {
-            if (currentIndex === 0) { // Special handling for the "Nem" scenario
-                for (let i = 0; i < 5; i++) {
-                    let btn = document.createElement('button');
-                    btn.textContent = 'Igen';
-                    btn.onclick = yesClicked;
-                    document.getElementById('dynamicContainer').appendChild(btn);
-                }
-                document.getElementById('nextButton').textContent = 'Nem';
-                document.getElementById('nextButton').onclick = function() {
-                    shuffleNoButton();
-                };
-                shuffleNoButton();
-                document.getElementById('dynamicText').textContent = currentLang.question;
-                document.getElementById('dynamicContainer').style.display = 'block';
-                document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'none';
+            const container = document.getElementById('dynamicContainer');
+            container.children[0].innerHTML = ''; // Clear previous buttons
+            for (let i = 0; i < 5; i++) {
+                let btn = document.createElement('button');
+                btn.textContent = currentLang.yes;
+                btn.onclick = yesClicked;
+                container.children[0].appendChild(btn);
             }
+            let noBtn = document.createElement('button');
+            noBtn.textContent = currentLang.no;
+            noBtn.onclick = function() { shuffleNoButton(); };
+            container.children[0].appendChild(noBtn);
+            shuffleNoButton();
+            document.getElementById('dynamicContainer').style.display = 'block';
         }
 
         function shuffleNoButton() {
-            let container = document.getElementById('dynamicContainer');
-            let noButton = document.getElementById('nextButton');
+            const container = document.getElementById('dynamicContainer').children[0];
+            const noButton = container.lastChild;
             noButton.remove();
-            let position = Math.floor(Math.random() * (container.children.length + 1));
+            const position = Math.floor(Math.random() * (container.children.length + 1));
             container.insertBefore(noButton, container.children[position]);
         }
 
         function nextStage() {
             if (currentIndex < currentLang.yesResponses.length) {
                 document.getElementById('dynamicText').textContent = currentLang.yesResponses[currentIndex];
-                currentIndex++;
-            }
-            if (currentIndex === currentLang.yesResponses.length) {
-                document.getElementById('nextButton').style.display = 'none';
-                if (currentIndex === 3) {
-                    document.getElementById('dynamicText').textContent = currentLang.finalMessage;
-                    let joinButton = document.createElement('button');
-                    joinButton.textContent = 'Csatlakozom';
-                    joinButton.onclick = function() {
+                if (currentIndex === 2) {
+                    document.getElementById('nextButton').textContent = currentLang.join;
+                    document.getElementById('nextButton').onclick = function() {
                         document.getElementById('dynamicText').textContent = currentLang.finalMessage;
+                        document.getElementById('nextButton').style.display = 'none';
                     };
-                    document.getElementById('dynamicContainer').appendChild(joinButton);
                 }
+                currentIndex++;
             }
         }
     </script>
