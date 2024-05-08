@@ -33,6 +33,10 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+        #nextButton {
+            display: block;
+            margin: 20px auto; /* Center the button */
+        }
     </style>
 </head>
 <body>
@@ -47,7 +51,7 @@
     </div>
     <div id="dynamicContainer" class="hidden">
         <p id="dynamicText"></p>
-        <button id="nextButton" class="hidden" onclick="nextStage()"></button>
+        <button id="nextButton" onclick="nextStage()"></button>
     </div>
 
     <script>
@@ -87,12 +91,13 @@
             document.getElementById('mainQuestion').textContent = currentLang.question;
             document.getElementById('yesButton').textContent = currentLang.yes;
             document.getElementById('noButton').textContent = currentLang.no;
+            document.getElementById('nextButton').textContent = currentLang.next;
         }
 
         function yesClicked() {
             document.getElementById('mainContainer').style.display = 'none';
             document.getElementById('dynamicContainer').style.display = 'block';
-            document.getElementById('nextButton').style.display = 'block';
+            document.getElementById('nextButton').style.display = 'block'; // Ensure button is visible
             currentIndex = 0;
             nextStage();
         }
