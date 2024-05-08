@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Project</title>
+    <title>Community Choices</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -25,10 +25,10 @@
         button:hover {
             background-color: #777;
         }
-        #yesContainer, #noContainer {
+        .hidden {
             display: none;
         }
-        #yesContainer div, #noContainer div {
+        #dynamicContainer div {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -40,63 +40,96 @@
         <button onclick="setLanguage('HU')">HU</button>
         <button onclick="setLanguage('RO')">RO</button>
     </div>
-    <div id="question">
-        <h1></h1>
+    <div id="mainContainer" class="hidden">
+        <h1 id="mainQuestion"></h1>
         <button onclick="yesClicked()">Igen</button>
         <button onclick="noClicked()">Nem</button>
     </div>
-    <div id="yesContainer">
-        <p></p>
+    <div id="dynamicContainer" class="hidden">
+        <p id="dynamicText"></p>
+        <button id="nextButton" onclick="nextStage()">Tovább</button>
     </div>
-    <div id="noContainer">
-        <div></div>
-        <button onclick="randomNoButton()">Nem</button>
-    </div>
-    
+
     <script>
+        const textHU = {
+            question: "Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?",
+            yesResponses: [
+                "Változtasd meg az életed minőségét!",
+                "Törd meg a magány láncát!",
+                ""
+            ],
+            finalMessage: "Örülünk, hogy itt vagy! Ezeket a mondatokat a ChatGPT generálta arra a kérdésre, hogy \"Milyen mondatokkal lehetne bevonzani embereket egy szektába?\""
+        };
+        const textRO = {
+            question: "Ești gata să găsești fericirea adevărată în comunitatea noastră?",
+            yesResponses: [
+                "Schimbă calitatea vieții tale!",
+                "Rupe lanțurile singurătății!",
+                ""
+            ],
+            finalMessage: "Ne bucurăm că ești aici! Aceste propoziții au fost generate de ChatGPT la întrebarea \"Ce fraze ar putea atrage oamenii într-o sectă?\""
+        };
+
+        let currentLang, currentIndex = 0;
+
         function setLanguage(lang) {
-            const questionTextHU = "Készen állsz rá, hogy megtaláld közösségünkben az igazi boldogságot?";
-            const questionTextRO = "Ești gata să găsești adevărata fericire în comunitatea noastră?";
-            const yesTextHU = "Ez a Marosvásárhelyi Művészeti Egyetem III. éves teatrológia osztályának A galambok hallgatnak című utcaszínházi projektje. A szekták ilyen és ehhez hasonló mondatokkal vonzzák be az embereket. Ezeket a mondatok a ChatGPT írta.";
-            const yesTextRO = "Acesta este proiectul de teatru stradal al clasei de teatrologie anul III de la Universitatea de Arte din Târgu Mureș, numit Tăcerea porumbeilor. Sectele atrag oamenii cu astfel de propoziții. Aceste propoziții au fost scrise de ChatGPT.";
-            
+            currentLang = lang === 'HU' ? textHU : textRO;
             document.getElementById('languageSelector').style.display = 'none';
-            document.getElementById('question').style.display = 'block';
-            
-            if (lang === 'HU') {
-                document.querySelector('#question h1').textContent = questionTextHU;
-                document.querySelector('#yesContainer p').textContent = yesTextHU;
-            } else {
-                document.querySelector('#question h1').textContent = questionTextRO;
-                document.querySelector('#yesContainer p').textContent = yesTextRO;
-            }
+            document.getElementById('mainContainer').style.display = 'block';
+            document.getElementById('mainQuestion').textContent = currentLang.question;
+            document.getElementById('nextButton').textContent = lang === 'HU' ? 'Tovább' : 'Continuă';
         }
 
         function yesClicked() {
-            document.getElementById('question').style.display = 'none';
-            document.getElementById('yesContainer').style.display = 'block';
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('dynamicContainer').style.display = 'block';
+            nextStage();
         }
 
         function noClicked() {
-            document.getElementById('question').style.display = 'none';
-            const container = document.getElementById('noContainer').children[0];
-            container.innerHTML = ''; // Clear previous buttons
-            for (let i = 0; i < 50; i++) {
-                const button = document.createElement('button');
-                button.textContent = 'Igen';
-                button.onclick = yesClicked;
-                container.appendChild(button);
+            if (currentIndex === 0) { // Special handling for the "Nem" scenario
+                for (let i = 0; i < 5; i++) {
+                    let btn = document.createElement('button');
+                    btn.textContent = 'Igen';
+                    btn.onclick = yesClicked;
+                    document.getElementById('dynamicContainer').appendChild(btn);
+                }
+                document.getElementById('nextButton').textContent = 'Nem';
+                document.getElementById('nextButton').onclick = function() {
+                    shuffleNoButton();
+                };
+                shuffleNoButton();
+                document.getElementById('dynamicText').textContent = currentLang.question;
+                document.getElementById('dynamicContainer').style.display = 'block';
+                document.getElementById('mainContainer').style.display = 'none';
             }
-            document.getElementById('noContainer').style.display = 'block';
-            randomNoButton();
         }
 
-        function randomNoButton() {
-            const container = document.getElementById('noContainer').children[0];
-            const noButton = document.getElementById('noContainer').children[1];
-            noButton.remove(); // Remove the button to place it again
-            const position = Math.floor(Math.random() * (container.children.length + 1)); // Random position
+        function shuffleNoButton() {
+            let container = document.getElementById('dynamicContainer');
+            let noButton = document.getElementById('nextButton');
+            noButton.remove();
+            let position = Math.floor(Math.random() * (container.children.length + 1));
             container.insertBefore(noButton, container.children[position]);
+        }
+
+        function nextStage() {
+            if (currentIndex < currentLang.yesResponses.length) {
+                document.getElementById('dynamicText').textContent = currentLang.yesResponses[currentIndex];
+                currentIndex++;
+            }
+            if (currentIndex === currentLang.yesResponses.length) {
+                document.getElementById('nextButton').style.display = 'none';
+                if (currentIndex === 3) {
+                    document.getElementById('dynamicText').textContent = currentLang.finalMessage;
+                    let joinButton = document.createElement('button');
+                    joinButton.textContent = 'Csatlakozom';
+                    joinButton.onclick = function() {
+                        document.getElementById('dynamicText').textContent = currentLang.finalMessage;
+                    };
+                    document.getElementById('dynamicContainer').appendChild(joinButton);
+                }
+            }
         }
     </script>
 </body>
